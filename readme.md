@@ -1,9 +1,9 @@
 # Project Title
 
-**FIRST & LAST NAME:** A B
+**FIRST & LAST NAME:** Sathvika Alla
 
-**Sparring Partner:** C D
+**Sparring Partner:** Farah Yakouobi
 
 **Project Summary in max 10 words:** E
 
-**Project Title:** F
+**Project Title:** Skin Image Recognition

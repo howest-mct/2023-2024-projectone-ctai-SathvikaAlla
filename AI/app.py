@@ -24,7 +24,7 @@ tx_q = Queue()
 rx_q = Queue()
 
 targetDeviceName=None
-targetDeviceMac="D8:3A:DD:B8:9E:86"
+targetDeviceMac="D8:3A:DD:D9:6B:BA"
 
 def init_ble_thread():
     # Creating a new thread for running a function 'run' with specified arguments.
@@ -98,7 +98,7 @@ def show_preds_video(video_path, conf_threshold):
     out.release()
 
     interface_video.close()
-    
+
 
 
 # Defining inputs and outputs for the Gradio interface.
@@ -127,4 +127,4 @@ if __name__ == '__main__':
     time.sleep(1) # little breathing room for BLE to start
     print("launching GradIO interface")
     interface_video.launch()
-    
+

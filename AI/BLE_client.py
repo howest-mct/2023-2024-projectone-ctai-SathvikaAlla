@@ -14,7 +14,7 @@ UART_SERVICE_UUID = "6E400001-B5A3-F393-E0A9-E50E24DCCA9E"
 UART_RX_CHAR_UUID = "6E400002-B5A3-F393-E0A9-E50E24DCCA9E"
 UART_TX_CHAR_UUID = "6E400003-B5A3-F393-E0A9-E50E24DCCA9E"
 
-BLE_DEVICE_MAC = "D8:3A:DD:B8:9E:86" #"C4:4F:33:75:D9:B3"  # "D8:3A:DD:B8:9E:86" for RPi
+BLE_DEVICE_MAC = "D8:3A:DD:D9:6B:BA" #"C4:4F:33:75:D9:B3"  # "D8:3A:DD:B8:9E:86" for RPi
 
 
 # TIP: you can get this function and more from the ``more-itertools`` package.
@@ -88,7 +88,7 @@ async def uart_terminal(rx_q=None, tx_q=None, targetDeviceName=None, targetDevic
                     time.sleep(0.2)
             else:
                 while True:
-                    
+
 
                     try:
                         data = tx_q.get_nowait()
@@ -109,7 +109,7 @@ async def uart_terminal(rx_q=None, tx_q=None, targetDeviceName=None, targetDevic
 def run(rx_q=None, tx_q=None, targetDeviceName=None, targetDeviceMac=None):
     if targetDeviceName is None and targetDeviceMac is None:
         raise ValueError("Both targetDeviceName and targetDeviceMac cannot be None. Please provide at least one.")
-    
+
 
     loop = asyncio.new_event_loop()
     try:

@@ -11,6 +11,7 @@
 - ⚠ Unzip the file ⚠
 - Place the file on an SD card of at least 8GB (16GB recommended) using Win32 Imager or Balena Etcher.
   If you want to use **The Raspberry Pi Imager** tool, **make sure you don't apply the OS customisation settings**
+  To use the Raspi Imager --- > Image type: 'custom', DONT APPLY THE CUSTOMISATION'
 - After the image is written, you can remove the SD card and insert it into your Pi.
 
 ### Connecting the Pi
@@ -61,12 +62,12 @@
 
 4. **Set Up Python Virtual Environment:**
 
-What is a Virtual Environment? See: https://datascientest.com/en/python-virtualenv-your-essential-guide-to-virtual-environments
+   What is a Virtual Environment? See: <https://datascientest.com/en/python-virtualenv-your-essential-guide-to-virtual-environments>
 
-- Open the Command Palette (`View > Command Palette`).
-- Search for `Python: Create Environment`.
-- Select `Venv` and choose any Python 3.11 interpreter.
-- When prompted, check the `RPi/requirements.txt` and confirm by pressing OK.
+   - Open the Command Palette (`View > Command Palette`).
+   - Search for `Python: Create Environment`.
+   - Select `Venv` and choose any Python 3.11 interpreter.
+   - When prompted, check the `RPi/requirements.txt` and confirm by pressing OK.
 
 5. **Modify the Bluetooth Server Code:**
 
@@ -115,7 +116,7 @@ _"Bleak is a GATT client software, capable of connecting to BLE devices acting a
    - Select `Venv` and choose a recent Python (e.g. 3.10) interpreter.
    - When prompted, check the `AI/requirements.txt` file and confirm by pressing OK.
 
-If the venv doesn't work, manually install bleak via pip and run your code like in the AI labs.
+   If the venv doesn't work, manually install bleak via pip and run your code like in the AI labs.
 
 4. **Modify AI Bluetooth Code:**
 

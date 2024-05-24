@@ -1,12 +1,12 @@
 # Project Information
 
-**FIRST NAME LAST NAME:** A B
+**FIRST NAME LAST NAME:** Sathvika Alla
 
-**Sparring Partner:** C D
+**Sparring Partner:** Farah Yakoubi
 
-**Project Summary in max 10 words:** E
+**Project Summary in max 10 words:**  AI detects skin type and issues, provides personalized skincare recommendations.
 
-**Project Title:** F
+**Project Title:** Skin Image Recognition
 
 # Tips for Feedback Conversations
 

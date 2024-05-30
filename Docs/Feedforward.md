@@ -32,17 +32,15 @@
 
 # Feedforward Conversations
 
-## Conversation 1 (Date: xx/xx/2024)
+## Conversation 1 (Date: 29/05/2024)
 
-Lecturer:
+Lecturer: Marie Dewitte
 
 Questions for this conversation:
 
-- Question 1: V
+- Question 1: Is it possible to have 2 different models for my project? If yes how would I connect them both?
 
-This is the feedback on my questions.
-
-- Feedback 1: G
+- Feedback 1: Yes, it is possible. 
 
 ## Conversation 2 (Date: xx/xx/2024)
 

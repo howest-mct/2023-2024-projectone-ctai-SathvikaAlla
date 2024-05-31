@@ -40,7 +40,13 @@ Questions for this conversation:
 
 - Question 1: Is it possible to have 2 different models for my project? If yes how would I connect them both?
 
-- Feedback 1: Yes, it is possible. 
+- Feedback 1: Yes, it is possible. There will be a session about it soon. Think about how your skin type model would react to images with non-clear skin. Does it make sense for a picture of acne to also have a predicted skin type?
+
+- Question 2: Any tips on how I could improve my model?
+- Feedback 2: Improve normalisation, more examples(data), look for more specific examples (eczema).
+
+- Question 3: Any classes I can include/exclude?
+- Feedback 3: A healthy skin class is a good option; it’s always going to pick something so you need to definetely include healthy skin otherwise it’s gonna choose something else.
 
 ## Conversation 2 (Date: xx/xx/2024)
 

@@ -39,7 +39,6 @@ Lecturer: Marie Dewitte
 Questions for this conversation:
 
 - Question 1: Is it possible to have 2 different models for my project? If yes how would I connect them both?
-
 - Feedback 1: Yes, it is possible. There will be a session about it soon. Think about how your skin type model would react to images with non-clear skin. Does it make sense for a picture of acne to also have a predicted skin type?
 
 - Question 2: Any tips on how I could improve my model?
@@ -48,26 +47,20 @@ Questions for this conversation:
 - Question 3: Any classes I can include/exclude?
 - Feedback 3: A healthy skin class is a good option; it’s always going to pick something so you need to definetely include healthy skin otherwise it’s gonna choose something else.
 
-## Conversation 2 (Date: xx/xx/2024)
+## Conversation 2 (Date: 28/05/2024)
 
-Lecturer:
+Lecturer: Frederik Waeyaert, Dieter
 
-Questions for this conversation:
+Tour Moment
 
-- Question 1: V
+- Feedback 1: annotation: ok first traing in VS Code Toggle No consultations yet
 
-This is the feedback on my questions.
+## Conversation 3 (Date: 04/06/2024)
 
-- Feedback 1: G
+Lecturer: Claudia, Tijn, Cristophe
 
-## Conversation 3 (Date: xx/xx/2024)
+Tour Moment
 
-Lecturer:
-
-Questions for this conversation:
-
-- [x] Question 1: V
-
-This is the feedback on my questions.
-
-- Feedback 1: G
+- Feedback 1: Keep in mind to toggl different categories.
+- Feedback 2: Save and show the confusion matrix for the model next time.
+- Feedback 3: Find a better way to demonstrate your project with either images or videos.

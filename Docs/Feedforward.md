@@ -36,6 +36,8 @@
 
 Lecturer: Marie Dewitte
 
+Consult:
+
 Questions for this conversation:
 
 - Question 1: Is it possible to have 2 different models for my project? If yes how would I connect them both?
@@ -64,3 +66,37 @@ Tour Moment
 - Feedback 1: Keep in mind to toggl different categories.
 - Feedback 2: Save and show the confusion matrix for the model next time.
 - Feedback 3: Find a better way to demonstrate your project with either images or videos.
+
+## Conversation 4 (Date: 05/06/2024)
+
+Lecturer: Marie Dewitte
+
+Consult:
+
+Questions for this conversation:
+
+- Question 1: I feel like I'm overly complicating my project by doing skin type and disease detection at the same time. The resolution and the type of input data needed Is it possible for me to only do skin disease detection?
+- Feedback 1: Changing the PD now would be difficult. I'll discuss with my colleagues and let you know. You can still try to make them both work seperately with a toggle of some kind which is fine by me.
+
+- Question 2: Running the model on the raspberry pi might be a problem as it lags a lot. Is this going to be a problem?
+- Feedback 2: PJ can help you with , bc your sending every single frame through that’s why it takes long to process , make it more optimised but for further information PJ.
+
+- Question 3: I'm not sure how exactly and on what we are being graded on.
+- Feedback 3: Different stuff your handed in, creating rubrics on different assignments.Scoring is for everyone different, based on questions you need to answer. Not the accuracy alone, it has some weight but not all defining.
+
+- Question 4: Is it okay if I use a video to demonstrate my skin diseases model?
+- Feedback 4: video for skin disease is okay, you will need to able to programme that one is image and the other is a video. Or solve it differently than toggle  (creative).
+
+## Conversation 5 (Date: 05/06/2024)
+
+Lecturer: Tijn
+
+Consult:
+
+Questions for this conversation:
+
+- Question 1: You mentioned that my nice to haves and must haves weren't clear enough in my maker skills document.
+- Feedback 1: Primer and paints were listed as nice to haves in your document instead of must haves. You don't need to make any changes if you want to etch the text using a laser cutter.
+
+- Question 2: Do I need to include my whole project kit in my plan for a product?
+- Feedback 2: Not required, but you could do that.

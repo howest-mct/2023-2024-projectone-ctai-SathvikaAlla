@@ -23,7 +23,7 @@ ECZEMA_CLASS_ID = 1
 CHICKEN_SKIN_CLASS_ID = 2
 
 # Process video frames
-def process_video(video_path, conf_threshold, frame_skip=5):
+def process_video(video_path, conf_threshold, frame_skip=10):
     cap = cv2.VideoCapture(video_path)
     frame_count = 0
 

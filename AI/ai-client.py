@@ -14,8 +14,8 @@ shutdown_flag = threading.Event()
 
 # Define colors for bounding boxes
 bbox_colors = {
-    'Acne': (0, 255, 0),  # Green for Orange
-    'Eczema': (255, 0, 0),  # Red for Niuniu
+    'Acne': (0, 255, 0),
+    'Eczema': (255, 0, 0),
     'Chicken Skin' : (0, 0, 255)
 }
 
@@ -105,8 +105,6 @@ def process_video(video_source, conf_threshold, frame_skip=5):
                             current_state = 'Chicken Skin'
                         disease_detected = True
 
-
-
         # Display the annotated frame, predictions, and confidences
         annotated_frame = cv2.cvtColor(annotated_frame, cv2.COLOR_BGR2RGB)
         image_placeholder.image(annotated_frame, channels="RGB")
@@ -118,7 +116,6 @@ def process_video(video_source, conf_threshold, frame_skip=5):
 def process_image(img, conf_threshold):
     global current_state, disease_detected
     results = model(img)
-    # img = np.asarray(img)
     predictions = []
     confidences = []
 
@@ -163,33 +160,35 @@ type_detected = False
 def process_img_skin_types(img, conf_threshold):
     global current_state, type_detected
     img = np.array(img)
+    prediction = None
+    confidence = None
     # Perform inference using the YOLOv8 skin type classification model
     results = model2.predict(img)
 
     # Get the predicted class and confidence
-    class_id = np.argmax(results.probs)
-    class_name = results.names[class_id]
-    confidence = results.probs[class_id]
-
+    for result in results:
+        class_id = result.probs.top1
     # Check if the confidence is above the threshold
-    if confidence >= conf_threshold:
-        type_detected = True
+        if  float(result.probs.top1conf)>= conf_threshold:
+            label = model2.names[int(class_id)]
 
-        # Draw a bounding box around the image with the predicted class and confidence
-        img = cv2.rectangle(img, (0, 0), (img.shape[1], img.shape[0]), (0, 255, 0), 2)
-        cv2.putText(img, f"{class_name} ({confidence:.2f})", (10, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0), 2)
+            type_detected = True
 
-        if class_name == 'Dry':
+            # Draw a bounding box around the image with the predicted class and confidence
+            img = cv2.rectangle(img, (0, 0), (img.shape[1], img.shape[0]), (0, 255, 0), 2)
+            cv2.putText(img, f"{label} ({float(result.probs.top1conf):.2f})", (10, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0), 2)
+
+        if label == 'dry':
             if current_state != 'Dry':
                 client_socket.sendall('dry'.encode('utf-8'))
                 current_state = 'Dry'
             type_detected = True
-        elif class_name == 'Oily':
+        elif label == 'oily':
             if current_state != 'Oily':
                 client_socket.sendall('oily'.encode('utf-8'))
                 current_state = 'Oily'
             type_detected = True
-        elif class_name == 'Normal':
+        elif label == 'normal':
             if current_state != 'Normal':
                 client_socket.sendall('normal'.encode('utf-8'))
                 current_state = 'Normal'
@@ -197,7 +196,7 @@ def process_img_skin_types(img, conf_threshold):
     # Display the annotated image
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     image_placeholder.image(img, channels="RGB")
-    results_placeholder.text(f"Predicted Skin Type: {class_name} (Confidence: {confidence:.2f})")
+    results_placeholder.text(f"Predicted Skin Type: {label} (Confidence: {float(result.probs.top1conf):.2f})")
 
 
 # Function to process video received from the Raspberry Pi over a socket
@@ -286,22 +285,23 @@ setup_socket_client()
 
 # Load the YOLO model
 model = YOLO('AI\skin_disease_best_4.pt')
-model2 = YOLO('AI\skin_types_best.pt')
+model2 = YOLO('AI\skin_types_best_1.pt')
 
 # Streamlit page configuration
-st.set_page_config(page_title="Skin Image Recognition", layout="wide")
+st.set_page_config(page_title="Skin Image Recognition")
 st.title("Skin Image Recognition")
 
 
 
 # Main model selection
-st.subheader("Select the Model to Run")
-model_choice = st.radio(
-    "",
-    ("Skin Disease Detection", "Skin Type Classification"),
-    index=0,
-    horizontal=True
-)
+st.subheader("Select the Model to Run 👉")
+model_choice = st.selectbox(
+        label = "Select a model to Run ",
+        options = ("Skin Disease Detection", "Skin Type Classification"),
+        index = None,
+        label_visibility='collapsed'
+    )
+
 
 if model_choice == "Skin Disease Detection":
     # Skin disease detection page
@@ -319,7 +319,7 @@ if model_choice == "Skin Disease Detection":
 
     # Webcam or upload video choice
     st.sidebar.title("Data Source")
-    source = st.sidebar.radio("Choose the data source", ("Webcam", "Raspberry Pi Camera", "Upload Video", "Upload Image"))
+    source = st.sidebar.radio("Choose the data source", ("Webcam", "Raspberry Pi Camera", "Upload Video", "Upload Image"), index=None)
 
     if source == "Raspberry Pi Camera":
         client_socket.sendall('start_video'.encode('utf-8'))
@@ -359,7 +359,7 @@ elif model_choice == "Skin Type Classification":
 
     # Webcam or upload image choice
     st.sidebar.title("Data Source")
-    source = st.sidebar.radio("Choose the data source", ("Upload Image","Webcam"))
+    source = st.sidebar.radio("Choose the data source", ("Upload Image","Webcam"), index=None)
 
     if source == "Upload Image":
         uploaded_file = st.sidebar.file_uploader("Upload an image", type=["jpg","png","webp","jpeg"])
@@ -369,3 +369,12 @@ elif model_choice == "Skin Type Classification":
                 tmp_file_path = tmp_file.name
             img = cv2.imread(tmp_file_path)
             process_img_skin_types(img, conf_threshold)
+
+    if source == 'Webcam':
+        picture = st.camera_input("Take a picture")
+
+        if picture is not None:
+            # To read image file buffer with OpenCV:
+            bytes_data = picture.getvalue()
+            cv2_img = cv2.imdecode(np.frombuffer(bytes_data, np.uint8), cv2.IMREAD_COLOR)
+            process_img_skin_types(cv2_img, conf_threshold)

@@ -14,7 +14,7 @@
 
 > Determine for yourself what you would like feedback on. Write down a few points in advance where you definitely want to receive feedback. This way, the feedback conversation will be more focused and the questions you definitely want answered will be addressed.
 
-## During the Conversation:
+## During the Conversation
 
 > **Listen actively:** Do not immediately go on the defensive but try to listen well. Show both verbally and non-verbally that you are paying attention to the feedback by maintaining an open posture (eye contact, upright posture), taking notes, nodding...
 
@@ -100,3 +100,17 @@ Questions for this conversation:
 
 - Question 2: Do I need to include my whole project kit in my plan for a product?
 - Feedback 2: Not required, but you could do that.
+
+## Conversation 6 (Date: 11/06/2024)
+
+Lecturer: Marie Dewitte, Stijn Walcarius, Pieter Jan
+
+Tour Moment:
+
+Feedback:  Skin Image Recognition Works fine wth camera video: ok 
+           Remark: if nothing is detected -> Can you clear the previous detection from your LCD? 
+           communication with the raspi OR show a working model on raspi: ok 
+           maker skills: not yet 
+           toggl: ok FeedForward on the 
+           Github: ok 
+           video: no

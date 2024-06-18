@@ -81,20 +81,20 @@ def handle_client(sock, shutdown_flag):
             elif message == 'chicken_skin':
                 lcd.clear()
                 lcd.send_string("Chiken Skin detected",1)
-            elif message == 'no_disease':
+            elif message in ['no_disease', 'source_change', 'model_change']:
                 lcd.clear()
 
             elif message == 'dry':
-                set_servo_angle(35)
-                time.sleep(0.6)
+                set_servo_angle(20)
+                time.sleep(1)
                 set_servo_angle(0)
             elif message == 'normal':
                 set_servo_angle(90)
-                time.sleep(0.6)
+                time.sleep(1)
                 set_servo_angle(0)
             elif message == 'oily':
-                set_servo_angle(145)
-                time.sleep(0.6)
+                set_servo_angle(160)
+                time.sleep(1)
                 set_servo_angle(0)
             elif message == 'no_type':
                 set_servo_angle(0)

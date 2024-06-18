@@ -7,6 +7,8 @@ import streamlit as st
 import numpy as np
 import os
 import time
+import requests
+
 # Server address for the Raspberry Pi
 server_address = ('192.168.168.167', 8500)
 client_socket = None
@@ -112,9 +114,9 @@ def process_video(video_source, conf_threshold, frame_skip=5):
 
         # Display the annotated frame, predictions, and confidences
         annotated_frame = cv2.cvtColor(annotated_frame, cv2.COLOR_BGR2RGB)
+        results_placeholder.markdown("### Detected Results:\n" + "\n".join(f"- {pred}" for pred in predictions))
+        confidence_placeholder.markdown("### Confidences:\n" + "\n".join(f"- {conf}" for conf in confidences))
         image_placeholder.image(annotated_frame, channels="RGB")
-        results_placeholder.text("Detected Results:\n" + "\n".join(predictions))
-        confidence_placeholder.text("Confidences:\n" + "\n".join(confidences))
 
     cap.release()
 
@@ -161,15 +163,14 @@ def process_image(img, conf_threshold):
             current_state = 'Nothing'
     # Display the annotated img, predictions, and confidences
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    results_placeholder.markdown("### Detected Results:\n" + "\n".join(f"- {pred}" for pred in predictions))
+    confidence_placeholder.markdown("### Confidences:\n" + "\n".join(f"- {conf}" for conf in confidences))
     image_placeholder.image(img, channels="RGB")
-    results_placeholder.text("Detected Results:\n" + "\n".join(predictions))
-    confidence_placeholder.text("Confidences:\n" + "\n".join(confidences))
+
 
 def process_img_skin_types(img, conf_threshold):
     global current_state_type, type_detected
     img = np.array(img)
-    prediction = None
-    confidence = None
     # Perform inference using the YOLOv8 skin type classification model
     results = model2.predict(img)
     type_detected = False
@@ -208,9 +209,8 @@ def process_img_skin_types(img, conf_threshold):
                 current_state_type = 'Nothing'
     # Display the annotated image
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    results_placeholder.markdown(f"**Predicted Skin Type**: {label} (**Confidence**: {float(result.probs.top1conf):.2f})")
     image_placeholder.image(img, channels="RGB")
-    results_placeholder.text(f"Predicted Skin Type: {label} (Confidence: {float(result.probs.top1conf):.2f})")
-
 
 # Function to process video received from the Raspberry Pi over a socket
 def process_video_from_socket(sock, conf_threshold, frame_skip=5):
@@ -291,6 +291,18 @@ def process_video_from_socket(sock, conf_threshold, frame_skip=5):
             print(f"Error receiving video frame: {e}")
             break
 
+def read_image_from_url(url):
+    # Step 1: Fetch the image data from the URL
+    response = requests.get(url)
+    response.raise_for_status()  # Check if the request was successful
+
+    # Step 2: Convert the image data to a NumPy array
+    image_data = np.frombuffer(response.content, np.uint8)
+
+    # Step 3: Decode the image data
+    image = cv2.imdecode(image_data, cv2.IMREAD_COLOR)
+
+    return image
 
 # Initialize the client socket connection
 setup_socket_client()
@@ -302,6 +314,7 @@ model2 = YOLO('AI\skin_types_best_1.pt')
 
 # Streamlit page configuration
 st.set_page_config(page_title="Skin Image Recognition", layout='wide')
+st.logo("AI\mct.png")
 st.title("Skin Image Recognition")
 
 def stream_data(text):
@@ -317,7 +330,10 @@ model_choice = st.selectbox(
         index = None,
         label_visibility='collapsed'
     )
+prev_model = None
 
+if prev_model!=model_choice:
+    client_socket.sendall('model_change'.encode('utf-8'))
 
 if not model_choice:
     col1, col2 = st.columns(2)
@@ -383,6 +399,11 @@ if not model_choice:
 
     2. **Allergy Testing**:
         Consider testing for potential allergens that may trigger eczema.
+
+    ### Additional Resources:
+    - [Eczema: Symptoms and causes](https://www.mayoclinic.org/diseases-conditions/atopic-dermatitis-eczema/symptoms-causes/syc-20353273#:~:text=Atopic%20dermatitis%20(eczema)%20is%20a,irritating%20but%20it's%20not%20contagious.)
+    - [National Eczema Association](https://nationaleczema.org/eczema/)
+
     """
 
     chicken_skin_text = """
@@ -447,6 +468,9 @@ if not model_choice:
         Explore laser treatments to reduce redness and smooth skin texture.
 
     Consistency is key. Regular application of skincare products and lifestyle adjustments can significantly improve the appearance of chicken skin.
+
+    ### Additional Resources:
+    - [Keratosis Pilaris - NHS](https://www.nhs.uk/conditions/keratosis-pilaris/)
     """
 
     acne_oily_text = """
@@ -501,6 +525,9 @@ if not model_choice:
         Consider chemical peels, laser therapy, or extractions for persistent acne.
 
     Consistency is essential. If over-the-counter treatments are not effective, consult a dermatologist.
+
+    ### Additional Resources:
+    - [Oily Skin and Acne - WebMD](https://www.webmd.com/skin-problems-and-treatments/acne/features/oily-skin)
     """
 
     acne_normal_text = """
@@ -547,6 +574,8 @@ if not model_choice:
 
     2. **Procedures**:
         Consider chemical peels or laser therapy.
+    ### Additional Resources:
+    - [Acne - WebMD](https://www.webmd.com/skin-problems-and-treatments/acne/default.htm)
     """
 
     acne_dry_text = """
@@ -595,8 +624,182 @@ if not model_choice:
     2. **Professional Procedures**:
         Consider treatments like hydrating facials or mild chemical peels designed for dry skin.
 
+    ### Additional Resources:
+    - [Dry Skin but Breaking Out? Here's What You Need to Know](https://caci.co.nz/blogs/skin-101/dry-skin-but-breaking-out-heres-what-you-need-to-know)
+    - [Dry Skin Acne: Causes & Treatment](https://www.cerave.com/skin-smarts/skin-concerns/acne/dry-skin-acne-causes-treatment#:~:text=There%20are%20several%20factors%20that,hormones%20to%20play%20a%20role.)
     """
 
+    oily_text = """
+    # Tips for Managing Oily Skin
+
+    Oily skin can be challenging to manage, but with the right skincare routine and lifestyle choices, you can keep your skin healthy and less prone to breakouts. Here are some tips to help you manage oily skin effectively.
+
+    ## Skincare Routine
+
+    1. **Cleanse Twice Daily**:
+        - Use a gentle, foaming, non-comedogenic cleanser specifically formulated for oily skin.
+        - Avoid harsh soaps that can strip your skin of natural oils, causing it to produce even more oil.
+
+    2. **Exfoliate Regularly**:
+        - Apply a chemical exfoliant with salicylic acid (BHA) or glycolic acid (AHA) 1-2 times a week to remove dead skin cells and unclog pores.
+        - Avoid physical scrubs which can irritate the skin and exacerbate oil production.
+
+    3. **Toner**:
+        - Choose an alcohol-free toner with ingredients like witch hazel, salicylic acid, or tea tree oil to help balance oil production and reduce shine.
+
+    4. **Treatment Products**:
+        - Use targeted treatments like benzoyl peroxide, retinoids, or niacinamide to reduce acne and control oil.
+        - Incorporate these treatments gradually to avoid irritation.
+
+    5. **Moisturize**:
+        - Opt for an oil-free, non-comedogenic moisturizer to keep your skin hydrated without adding excess oil.
+        - Look for moisturizers with ingredients like hyaluronic acid which hydrate without being heavy.
+
+    6. **Sunscreen**:
+        - Apply a broad-spectrum, oil-free SPF 30+ sunscreen daily to protect your skin from UV damage without clogging pores.
+
+    ## Lifestyle Tips
+
+    1. **Diet**:
+        - Limit high-glycemic foods such as sugary snacks and refined carbohydrates which can trigger oil production.
+        - Eat antioxidant-rich foods like fruits, vegetables, and omega-3 fatty acids to support overall skin health.
+
+    2. **Hydration**:
+        - Drink plenty of water throughout the day to keep your skin hydrated from the inside out.
+
+    3. **Avoid Touching Your Face**:
+        - Prevent the transfer of oil, dirt, and bacteria from your hands to your face which can lead to breakouts.
+
+    4. **Hair Care**:
+        - Keep your hair clean and away from your face to avoid transferring oil and hair products to your skin.
+
+    5. **Regular Exercise**:
+        - Exercise regularly to improve circulation and promote healthy skin.
+        - Always cleanse your face after sweating to remove excess oil and prevent clogged pores.
+
+    6. **Stress Management**:
+        - Engage in stress-reducing activities like yoga, meditation, or hobbies to keep stress levels in check, as stress can trigger excess oil production.
+
+    ## Professional Treatments
+
+    1. **Consult a Dermatologist**:
+        - Seek advice from a dermatologist for stronger treatments if over-the-counter products are not effective.
+        - They can prescribe medications or recommend procedures tailored to your skin's needs.
+
+    2. **Professional Procedures**:
+        - Consider professional treatments like chemical peels, laser therapy, or extractions to manage oily skin and reduce acne.
+
+    ### Additional Resources:
+    - [Oily Skin and Acne - WebMD](https://www.webmd.com/skin-problems-and-treatments/acne/features/oily-skin)
+    - [Oily Skin - Verywell Health](https://www.verywellhealth.com/acne-and-oily-skin-15964)
+
+    Consistency is essential. Regularly follow your skincare routine and make appropriate lifestyle adjustments to manage oily skin effectively.
+    """
+
+    dry_text = """
+    # Tips for Managing Dry Skin
+
+    Dry skin can feel tight, rough, and uncomfortable, but with the right skincare routine and lifestyle adjustments, you can keep your skin hydrated and healthy. Here are some tips to help you manage dry skin effectively.
+
+    ## Skincare Routine
+
+    1. **Gentle Cleansing**:
+        - Use a mild, hydrating cleanser formulated for dry skin.
+        - Avoid harsh soaps and cleansers that can strip natural oils from your skin.
+
+    2. **Moisturize Regularly**:
+        - Apply a rich, emollient moisturizer immediately after bathing and throughout the day as needed.
+        - Look for moisturizers with ingredients like hyaluronic acid, glycerin, or shea butter to lock in moisture.
+
+    3. **Exfoliate Gently**:
+        - Use a gentle exfoliant with ingredients like lactic acid (AHA) or urea once a week to remove dead skin cells and promote cell turnover.
+        - Avoid harsh scrubs or exfoliants that can further dry out your skin.
+
+    4. **Treatment Products**:
+        - Use products with ingredients like ceramides or oatmeal to soothe and repair the skin barrier.
+        - Consider incorporating a hydrating serum or facial oil to boost moisture levels.
+
+    5. **Sunscreen**:
+        - Apply a broad-spectrum SPF 30+ sunscreen daily, even on cloudy days, to protect your skin from UV damage.
+
+    ## Lifestyle Tips
+
+    1. **Hydration**:
+        - Drink plenty of water throughout the day to keep your skin hydrated from within.
+
+    2. **Humidifier**:
+        - Use a humidifier in your home, especially during dry climates or in winter, to add moisture to the air.
+
+    3. **Avoid Harsh Products**:
+        - Steer clear of alcohol-based products and strong astringents which can further dry out your skin.
+
+    4. **Balanced Diet**:
+        - Eat foods rich in omega-3 fatty acids, antioxidants, and vitamins to support healthy skin.
+
+    5. **Gentle Handling**:
+        - Pat your skin dry with a soft towel after bathing instead of rubbing, and avoid hot water which can strip natural oils.
+
+    ## Professional Treatments
+
+    1. **Consult a Dermatologist**:
+        - Seek advice from a dermatologist for personalized recommendations and treatments tailored to your dry skin.
+        - They may prescribe medicated creams or ointments to alleviate severe dryness.
+
+    2. **Professional Procedures**:
+        - Consider treatments like hydrating facials, microdermabrasion, or chemical peels designed to nourish and hydrate dry skin.
+
+    ### Additional Resources:
+    - [Dry Skin - Cleveland Clinic](https://my.clevelandclinic.org/health/diseases/16940-dry-skin)
+    - [Dry Skin: Symptoms and Causes - Mayo Clinic](https://www.mayoclinic.org/diseases-conditions/dry-skin/symptoms-causes/syc-20353885)
+
+    Consistency is key. Regularly follow your skincare routine and incorporate these lifestyle tips to effectively manage dry skin and promote overall skin health.
+
+    """
+
+    normal_text = """
+    # Congratulations, You Have Healthy Skin!
+
+    Maintaining healthy and normal skin is a wonderful achievement that reflects your skincare efforts paying off. Here are some basic tips to help you continue enjoying your healthy skin:
+
+    ## Skincare Routine
+
+    1. **Cleanse Regularly**:
+        - Use a gentle, non-comedogenic cleanser twice daily to remove dirt, oil, and impurities without stripping your skin.
+
+    2. **Moisturize**:
+        - Apply a lightweight, non-greasy moisturizer daily to keep your skin hydrated and balanced.
+
+    3. **Protect with Sunscreen**:
+        - Use a broad-spectrum SPF 30+ sunscreen every day, rain or shine, to protect your skin from harmful UV rays.
+
+
+    ## Lifestyle Tips
+
+    1. **Healthy Diet**:
+        - Eat a balanced diet rich in fruits, vegetables, and lean proteins to support skin health from within.
+
+    2. **Hydration**:
+        - Drink plenty of water throughout the day to keep your skin hydrated and maintain elasticity.
+
+    3. **Manage Stress**:
+        - Practice stress-reducing activities such as meditation, yoga, or hobbies you enjoy to keep your skin glowing.
+
+    4. **Exercise Regularly**:
+        - Engage in regular physical activity to improve circulation and promote a healthy complexion.
+
+    5. **Gentle Skincare Practices**:
+        - Avoid over-washing or using harsh products that can disrupt your skin's natural balance.
+
+    ## Professional Care
+
+    1. **Regular Dermatologist Visits**:
+        - Schedule periodic visits with a dermatologist to monitor skin health and address any concerns promptly.
+
+    2. **Professional Treatments**:
+        - Consider occasional facials or microdermabrasion treatments to enhance skin clarity and texture.
+
+    Keep up the great work in maintaining your healthy skin! Consistency with these tips will help you continue enjoying a glowing complexion and overall skin wellness.
+    """
     if type_choice == 'Oily' and disease_choice == 'Acne':
         st.write_stream(stream_data(acne_oily_text))
     elif type_choice == 'Dry' and disease_choice == 'Acne':
@@ -619,8 +822,18 @@ if not model_choice:
     elif type_choice == 'Dry' and disease_choice == 'Chicken Skin':
         st.write_stream(stream_data(chicken_skin_text))
 
+    elif type_choice == 'Dry' and disease_choice=='None':
+        st.write_stream(stream_data(dry_text))
+    elif type_choice == 'Oily' and disease_choice=='None':
+        st.write_stream(stream_data(oily_text))
+    elif type_choice == 'Normal' and disease_choice=='None':
+        st.write_stream(stream_data(normal_text))
+
 
 if model_choice == "Skin Disease Detection":
+    prev_model = model_choice
+
+
     # Skin disease detection page
     st.subheader("Skin Disease Detection")
     conf_threshold = st.slider("Confidence Threshold", min_value=0.0, max_value=1.0, value=0.5)
@@ -638,14 +851,18 @@ if model_choice == "Skin Disease Detection":
 
     # Webcam or upload video choice
     st.sidebar.title("Data Source")
+    prev_source = None
     source = st.sidebar.radio("Choose the data source", ("Live Webcam", "Image from Webcam", "Upload Video", "Upload Image"), index=None)
-
+    if prev_source!=source:
+        client_socket.sendall('source_change'.encode('utf-8'))
 
     if source == "Live Webcam":
         process_video(0, conf_threshold)
+        prev_source = source
 
     elif source == 'Image from Webcam':
         picture = st.camera_input("Take a picture")
+        prev_source = source
 
         if picture is not None:
             # To read image file buffer with OpenCV:
@@ -655,6 +872,7 @@ if model_choice == "Skin Disease Detection":
 
 
     elif source == "Upload Video":
+        prev_source = source
         uploaded_file = st.sidebar.file_uploader("Upload a video", type=["mp4"])
         if uploaded_file is not None:
             with tempfile.NamedTemporaryFile(delete=False) as tmp_file:
@@ -663,6 +881,17 @@ if model_choice == "Skin Disease Detection":
 
             process_video(tmp_file_path, conf_threshold)
     elif source == "Upload Image":
+        prev_source = source
+        with st.sidebar.popover("Enter Image URL"):
+            url = st.text_input("url",label_visibility="collapsed")
+
+        if url:
+            try:
+                img = read_image_from_url(url)
+            except Exception as ex:
+                st.text(ex)
+            process_image(img, conf_threshold)
+
         uploaded_file = st.sidebar.file_uploader("Upload a video", type=["jpg","png","webp","jpeg"])
         if uploaded_file is not None:
             with tempfile.NamedTemporaryFile(delete=False, suffix=os.path.splitext(uploaded_file.name)[1]) as tmp_file:
@@ -672,6 +901,7 @@ if model_choice == "Skin Disease Detection":
             process_image(img, conf_threshold)
 
 elif model_choice == "Skin Type Classification":
+    prev_model = model_choice
     # Skin type classification page
     st.subheader("Skin Type Classification")
     conf_threshold = st.slider("Confidence Threshold", min_value=0.0, max_value=1.0, value=0.5)
@@ -689,6 +919,7 @@ elif model_choice == "Skin Type Classification":
     source = st.sidebar.radio("Choose the data source", ("Upload Image","Image from Webcam"), index=None)
 
     if source == "Upload Image":
+
         uploaded_file = st.sidebar.file_uploader("Upload an image", type=["jpg","png","webp","jpeg"])
         if uploaded_file is not None:
             with tempfile.NamedTemporaryFile(delete=False, suffix=os.path.splitext(uploaded_file.name)[1]) as tmp_file:

@@ -7,8 +7,6 @@
 
 # Skin Health Detection & Analysis
 
-![Skin Health Detection](https://via.placeholder.com/800x400?text=Skin+Health+Detection+Demo)
-
 ## Overview
 An AI-powered system for real-time detection and analysis of skin conditions and skin types using YOLOv8. The project integrates computer vision with a Raspberry Pi for interactive display and analysis, and features a Streamlit-based web interface for local use.
 

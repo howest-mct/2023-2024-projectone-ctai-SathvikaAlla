@@ -12,7 +12,11 @@ An AI-powered system for real-time detection and analysis of skin conditions and
 
 ## 📹 Demo
 Watch the live demonstration:
-<iframe width="560" height="315" src="https://www.youtube.com/embed/2CauqGtoT4o?si=T8ibjTDPemsavCta" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+
+
+https://github.com/user-attachments/assets/137fec7f-68f6-48f8-96fb-33fc213a44ef
+
 
 ## 🎯 Features
 - **Real-time skin condition detection** for eczema, chicken skin (keratosis pilaris), and acne

@@ -55,14 +55,7 @@ python download_models.py
 # Launch the Streamlit application
 streamlit run app.py
 ```
-This will start a local web server and open the application in your default browser.
-
-### Desktop Application
-```bash
-python main.py --source 0  # Use webcam
-python main.py --source path/to/image.jpg  # Use image
-python main.py --source path/to/video.mp4  # Use video
-```
+This will start a local web server and open the application in your default browser where you can upload images and videos for analysis.
 
 ### Raspberry Pi Setup
 ```bash

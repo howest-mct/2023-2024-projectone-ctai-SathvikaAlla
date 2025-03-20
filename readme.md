@@ -8,7 +8,11 @@
 # Skin Health Detection & Analysis
 
 ## Overview
-An AI-powered system for real-time detection and analysis of skin conditions and skin types using YOLOv8. The project integrates computer vision with a Raspberry Pi for interactive display and analysis, and features a Streamlit-based web interface for local use.
+An AI-powered system for real-time detection and analysis of skin conditions and skin types using YOLOv8. The project integrates computer vision with a Raspberry Pi for interactive display and analysis, and features a Streamlit-based web interface for local use
+
+## 📹 Demo
+Watch the live demonstration:
+<iframe width="560" height="315" src="https://www.youtube.com/embed/2CauqGtoT4o?si=T8ibjTDPemsavCta" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 ## 🎯 Features
 - **Real-time skin condition detection** for eczema, chicken skin (keratosis pilaris), and acne
@@ -66,9 +70,6 @@ sudo apt-get install -y libopencv-dev python3-opencv
 # Run the application
 python raspberrypi_main.py
 ```
-
-## 📹 Demo
-Watch the live demonstration: [YouTube Demo](https://youtu.be/2CauqGtoT4o)
 
 ## 📚 Dataset
 The model was trained on a custom dataset of skin conditions and types across various demographics. The dataset includes:

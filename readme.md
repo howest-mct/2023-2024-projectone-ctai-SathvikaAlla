@@ -89,21 +89,4 @@ The model was trained on a custom dataset of skin conditions and types across va
 - [ ] Develop cloud deployment options for wider accessibility
 - [ ] Add mobile application support
 
-## 📋 Project Structure
-```
-project/
-├── models/                 # Pre-trained YOLOv8 models
-├── data/                   # Dataset and annotations
-├── src/                    # Source code
-│   ├── detector.py         # Core detection logic
-│   ├── processor.py        # Image processing utilities
-│   └── classifier.py       # Skin type classification
-├── raspberry_pi/           # Raspberry Pi specific code
-├── utils/                  # Utility functions
-├── app.py                  # Streamlit web application
-├── main.py                 # Main application entry point
-├── raspberrypi_main.py     # Raspberry Pi entry point
-└── requirements.txt        # Project dependencies
-```
-
 
